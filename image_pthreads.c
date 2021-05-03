@@ -187,7 +187,7 @@ int main(int argc, char **argv)
     }
 
     printf("before threadhandles free\n");
-    free(thread_handles);
+    // free(thread_handles);
     printf("after threadhandles free\n");
 
     // printf("here");
