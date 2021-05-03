@@ -134,6 +134,8 @@ enum KernelTypes GetKernelType(char *type)
 //argv is expected to take 2 arguments.  First is the source file name (can be jpg, png, bmp, tga).  Second is the lower case name of the algorithm.
 int main(int argc, char **argv)
 {
+    printf("running using pthreads...\n");
+
     long t1, t2;
     t1 = time(NULL);
 
@@ -184,7 +186,9 @@ int main(int argc, char **argv)
         pthread_join(thread_handles[thread], NULL);
     }
 
+    printf("before threadhandles free\n");
     free(thread_handles);
+    printf("after threadhandles free\n");
 
     // printf("here");
 

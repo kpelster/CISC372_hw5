@@ -102,6 +102,8 @@ enum KernelTypes GetKernelType(char* type){
 //argv is expected to take 2 arguments.  First is the source file name (can be jpg, png, bmp, tga).  Second is the lower case name of the algorithm.
 int main(int argc,char** argv){
 
+    printf("running using openMP...\n");
+
     // get number of threads from command line
     //int thread_count = strtol(argv[1], NULL, 10);
 
@@ -133,7 +135,7 @@ int main(int argc,char** argv){
     #pragma omp parallel
     convolute(&srcImage,&destImage,algorithms[type]);
   	
-    printf("here");
+    // printf("here");
 
     stbi_write_png("output.png",destImage.width,destImage.height,destImage.bpp,destImage.data,destImage.bpp*destImage.width);
     stbi_image_free(srcImage.data);
