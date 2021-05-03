@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <time.h>
 #include <string.h>
-#include "image.h"
+#include "image_PT.h"
 #include <pthread.h>
 
 #define STB_IMAGE_IMPLEMENTATION
