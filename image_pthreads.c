@@ -193,7 +193,7 @@ int main(int argc, char **argv)
     // printf("here");
 
     stbi_write_png("output.png", destImage.width, destImage.height, destImage.bpp, destImage.data, destImage.bpp * destImage.width);
-    //stbi_image_free(srcImage.data);
+    stbi_image_free(srcImage.data);
 
     free(destImage.data);
     t2 = time(NULL);
