@@ -187,15 +187,15 @@ int main(int argc, char **argv)
     }
 
     printf("before threadhandles free\n");
-    // free(thread_handles);
+    free(thread_handles);
     printf("after threadhandles free\n");
 
     // printf("here");
 
     stbi_write_png("output.png", destImage.width, destImage.height, destImage.bpp, destImage.data, destImage.bpp * destImage.width);
-    stbi_image_free(srcImage.data);
+    //stbi_image_free(srcImage.data);
 
-    // free(destImage.data);
+    free(destImage.data);
     t2 = time(NULL);
     printf("Took %ld seconds\n", t2 - t1);
     return 0;
