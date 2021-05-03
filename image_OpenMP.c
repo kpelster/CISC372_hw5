@@ -3,6 +3,7 @@
 #include <time.h>
 #include <string.h>
 #include "image.h"
+#include <omp.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -57,11 +58,21 @@ uint8_t getPixelValue(Image* srcImage,int x,int y,int bit,Matrix algorithm){
 //            algorithm: The kernel matrix to use for the convolution
 //Returns: Nothing
 void convolute(Image* srcImage,Image* destImage,Matrix algorithm){
+	printf("begin convolve\n");
+
+    int my_rank = omp_get_thread_num();
+    int thread_count = omp_get_num_threads();
+
+    int local_height = my_rank*(srcImage->height/thread_count);
+
     int row,pix,bit,span;
     span=srcImage->bpp*srcImage->bpp;
-    for (row=0;row<srcImage->height;row++){
+    // for (row=0;row<srcImage->height;row++){
+    for (row=0;row<local_height;row++){
         for (pix=0;pix<srcImage->width;pix++){
             for (bit=0;bit<srcImage->bpp;bit++){
+              // printf("in loop"); 
+                #pragma omp critical
                 destImage->data[Index(pix,row,srcImage->width,bit,srcImage->bpp)]=getPixelValue(srcImage,pix,row,bit,algorithm);
             }
         }
@@ -90,6 +101,12 @@ enum KernelTypes GetKernelType(char* type){
 //main:
 //argv is expected to take 2 arguments.  First is the source file name (can be jpg, png, bmp, tga).  Second is the lower case name of the algorithm.
 int main(int argc,char** argv){
+
+    // get number of threads from command line
+    //int thread_count = strtol(argv[1], NULL, 10);
+
+    //# pragma omp parallel num_threads(thread_count)
+    
     long t1,t2;
     t1=time(NULL);
 
@@ -111,7 +128,13 @@ int main(int argc,char** argv){
     destImage.height=srcImage.height;
     destImage.width=srcImage.width;
     destImage.data=malloc(sizeof(uint8_t)*destImage.width*destImage.bpp*destImage.height);
+    
+    //# pragma omp parallel num_threads(thread_count)
+    #pragma omp parallel
     convolute(&srcImage,&destImage,algorithms[type]);
+  	
+    printf("here");
+
     stbi_write_png("output.png",destImage.width,destImage.height,destImage.bpp,destImage.data,destImage.bpp*destImage.width);
     stbi_image_free(srcImage.data);
     
