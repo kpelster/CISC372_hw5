@@ -58,7 +58,7 @@ uint8_t getPixelValue(Image* srcImage,int x,int y,int bit,Matrix algorithm){
 //            algorithm: The kernel matrix to use for the convolution
 //Returns: Nothing
 void convolute(Image* srcImage,Image* destImage,Matrix algorithm){
-	printf("begin convolve\n");
+	// printf("begin convolve\n");
 
     int my_rank = omp_get_thread_num();
     int thread_count = omp_get_num_threads();
