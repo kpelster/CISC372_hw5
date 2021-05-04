@@ -75,12 +75,17 @@ void convolute(Image *srcImage, Image *destImage, Matrix algorithm, long my_rank
 {
     // printf("begin convolve %d\n", my_rank);
 
-    int local_height = my_rank * (srcImage->height / thread_count);
+    int local_height = ((srcImage->height + thread_count - 1) / thread_count);
+
+    int local_min = (my_rank) * local_height;
+    int local_max = (my_rank + 1) * local_height;
+
+    // printf("local min: %d local max: %d\n", local_min, local_max);
 
     int row, pix, bit, span;
     span = srcImage->bpp * srcImage->bpp;
     // for (row=0;row<srcImage->height;row++){
-    for (row = 0; row < local_height; row++)
+    for (row = local_min; row < local_max && row < srcImage->height; row++)
     {
         for (pix = 0; pix < srcImage->width; pix++)
         {
@@ -105,9 +110,9 @@ void *convolve(void *rank)
 
 //Usage: Prints usage information for the program
 //Returns: -1
-int Usage()
+int Usage(char *executable)
 {
-    printf("Usage: image <filename> <type>\n\twhere type is one of (edge,sharpen,blur,gauss,emboss,identity)\n");
+    printf("Usage: %s <filename> <type>\n\twhere type is one of (edge,sharpen,blur,gauss,emboss,identity)\n", executable);
     return -1;
 }
 
@@ -134,14 +139,14 @@ enum KernelTypes GetKernelType(char *type)
 //argv is expected to take 2 arguments.  First is the source file name (can be jpg, png, bmp, tga).  Second is the lower case name of the algorithm.
 int main(int argc, char **argv)
 {
-    printf("running using pthreads...\n");
+    printf("running using pthreads...\n\n");
 
     long t1, t2;
     t1 = time(NULL);
 
     stbi_set_flip_vertically_on_load(0);
     if (argc != 3)
-        return Usage();
+        return Usage(argv[0]);
     char *fileName = argv[1];
     // printf("arg1: %s\narg2: %s\n", argv[1], argv[2]);
     // printf("argv1: %d\nargv2: %d\n", strcmp(argv[1], "pic4.jpg"), strcmp(argv[2], "gauss"));
@@ -160,8 +165,6 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    
-
     destImage.bpp = srcImage.bpp;
     destImage.height = srcImage.height;
     destImage.width = srcImage.width;
@@ -170,9 +173,10 @@ int main(int argc, char **argv)
     // begin thread
     long thread;
     pthread_t *thread_handles;
-    thread_handles = (pthread_t*)malloc(thread_count*sizeof(pthread_t));
+
     thread_count = N;
-    
+    thread_handles = (pthread_t *)malloc(thread_count * sizeof(pthread_t));
+
     // printf("tc: %d\n", thread_count);
 
     for (thread = 0; thread < thread_count; thread++)
@@ -186,9 +190,9 @@ int main(int argc, char **argv)
         pthread_join(thread_handles[thread], NULL);
     }
 
-    printf("before threadhandles free\n");
+    // printf("before threadhandles free\n");
     free(thread_handles);
-    printf("after threadhandles free\n");
+    // printf("after threadhandles free\n");
 
     // printf("here");
 
