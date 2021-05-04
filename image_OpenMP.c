@@ -89,7 +89,7 @@ void convolute(Image *srcImage, Image *destImage, Matrix algorithm)
             for (bit = 0; bit < srcImage->bpp; bit++)
             {
                 // printf("in loop");
-                #pragma omp critical
+    //            #pragma omp critical
                 destImage->data[Index(pix, row, srcImage->width, bit, srcImage->bpp)] = getPixelValue(srcImage, pix, row, bit, algorithm);
             }
         }
