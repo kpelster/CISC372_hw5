@@ -1,0 +1,14 @@
+Script started on 2021-05-03 23:00:30-04:00
+]0;kpelster@br013:~/CISC372/hw5/CISC372_hw5[kpelster@r001 CISC372_hw5]$ ./imagePT pic4.jpg gauss
+running using pthreads...
+
+You have applied a gaussian filter to Gauss which has caused a tear in the time-space continum.
+Took 7 seconds
+]0;kpelster@br013:~/CISC372/hw5/CISC372_hw5[kpelster@r001 CISC372_hw5]$ ./imagePT pic4.jpg gauss[1P[1P[1@O[1@M[1@P
+running using openMP...
+You have applied a gaussian filter to Gauss which has caused a tear in the time-space continum.
+Took 11 seconds
+]0;kpelster@br013:~/CISC372/hw5/CISC372_hw5[kpelster@r001 CISC372_hw5]$ exit
+exit
+
+Script done on 2021-05-03 23:01:16-04:00

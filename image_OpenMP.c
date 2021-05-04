@@ -11,6 +11,8 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+// N is the number of threads
+#define N 100
 //An array of kernel matrices to be used for image convolution.
 //The indexes of these match the enumeration from the header file. ie. algorithms[BLUR] returns the kernel corresponding to a box blur.
 Matrix algorithms[] = {
@@ -65,10 +67,12 @@ uint8_t getPixelValue(Image *srcImage, int x, int y, int bit, Matrix algorithm)
 //Returns: Nothing
 void convolute(Image *srcImage, Image *destImage, Matrix algorithm)
 {
-    // printf("begin convolve\n");
+    // printf("begin convolve %d\n", my_rank);
 
     int my_rank = omp_get_thread_num();
     int thread_count = omp_get_num_threads();
+
+    printf("begin convolve %d\n", my_rank);
 
     int local_height = ((srcImage->height + thread_count - 1) / thread_count);
 
@@ -90,6 +94,7 @@ void convolute(Image *srcImage, Image *destImage, Matrix algorithm)
             }
         }
     }
+    printf("outside loop\n");
 }
 
 //Usage: Prints usage information for the program
@@ -124,8 +129,9 @@ enum KernelTypes GetKernelType(char *type)
 int main(int argc, char **argv)
 {
 
-    printf("running using openMP...\n");
+    printf("running using openMP...\n\n");
 
+    int thread_count = N;
     // get number of threads from command line
     //int thread_count = strtol(argv[1], NULL, 10);
 
@@ -157,10 +163,10 @@ int main(int argc, char **argv)
     destImage.data = malloc(sizeof(uint8_t) * destImage.width * destImage.bpp * destImage.height);
 
 //# pragma omp parallel num_threads(thread_count)
-#pragma omp parallel
+#pragma omp parallel num_threads(thread_count)
     convolute(&srcImage, &destImage, algorithms[type]);
 
-    // printf("here");
+    printf("here");
 
     stbi_write_png("output.png", destImage.width, destImage.height, destImage.bpp, destImage.data, destImage.bpp * destImage.width);
     stbi_image_free(srcImage.data);
