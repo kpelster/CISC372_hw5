@@ -74,7 +74,7 @@ uint8_t getPixelValue(Image *srcImage, int x, int y, int bit, Matrix algorithm)
 //Returns: Nothing
 void convolute(Image *srcImage, Image *destImage, Matrix algorithm)
 {
-    // printf("begin convolve %d\n", my_rank);
+    // here i only parallelized the rows
 
     int my_rank = omp_get_thread_num();
     int thread_count = omp_get_num_threads();
@@ -95,7 +95,7 @@ void convolute(Image *srcImage, Image *destImage, Matrix algorithm)
         {
             for (bit = 0; bit < srcImage->bpp; bit++)
             {
-                // printf("in loop");
+                // this really is not a critical section because each pixel is independent, so we do not need to put a pragma here.
     //            #pragma omp critical
                 destImage->data[Index(pix, row, srcImage->width, bit, srcImage->bpp)] = getPixelValue(srcImage, pix, row, bit, algorithm);
             }
