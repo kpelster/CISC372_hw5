@@ -1,3 +1,10 @@
+/**
+ * Kara Pelster
+ * CISC372
+ * HW6
+ * PTHREADS
+ **/
+
 #include <stdio.h>
 #include <stdint.h>
 #include <time.h>

@@ -1,3 +1,10 @@
+/**
+ * Kara Pelster
+ * CISC372
+ * HW6
+ * PTHREADS
+ **/
+
 #ifndef ___IMAGE
 #define ___IMAGE
 #include <stdint.h>

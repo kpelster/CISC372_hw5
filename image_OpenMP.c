@@ -1,3 +1,10 @@
+/**
+ * Kara Pelster
+ * CISC372
+ * HW6
+ * OPEN MP
+ **/
+
 #include <stdio.h>
 #include <stdint.h>
 #include <time.h>
@@ -12,7 +19,7 @@
 #include "stb_image_write.h"
 
 // N is the number of threads
-#define N 100
+#define N 10
 //An array of kernel matrices to be used for image convolution.
 //The indexes of these match the enumeration from the header file. ie. algorithms[BLUR] returns the kernel corresponding to a box blur.
 Matrix algorithms[] = {
